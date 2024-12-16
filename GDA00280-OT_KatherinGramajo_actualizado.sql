@@ -480,6 +480,255 @@ EXEC ActualizarProducto
 
 
 
+
+alter PROCEDURE InsertarProducto
+    @idProductos INT,
+    @CategoriaProductos_idCategoriaProductos INT,
+    @usuarios_idusuarios INT,
+    @nombre VARCHAR(45),
+    @marca VARCHAR(45),
+    @codigo VARCHAR(45),
+    @stock FLOAT,
+    @estados_idestados INT,
+    @precio FLOAT,
+    @fecha_creacion DATETIME,
+    @foto VARBINARY(MAX) = NULL -- Asignar valor NULL por defecto
+AS
+BEGIN
+    INSERT INTO Productos (
+        idProductos, 
+        CategoriaProductos_idCategoriaProductos, 
+        usuarios_idusuarios, 
+        nombre, 
+        marca, 
+        codigo, 
+        stock, 
+        estados_idestados, 
+        precio, 
+        fecha_creacion, 
+        foto
+    )
+    VALUES (
+        @idProductos, 
+        @CategoriaProductos_idCategoriaProductos, 
+        @usuarios_idusuarios, 
+        @nombre, 
+        @marca, 
+        @codigo, 
+        @stock, 
+        @estados_idestados, 
+        @precio, 
+        @fecha_creacion, 
+        COALESCE(@foto, NULL) -- Usar COALESCE para garantizar que si foto es NULL se inserte como NULL
+    );
+END;
+
+
+ALTER TABLE usuarios
+ALTER COLUMN password VARCHAR(255);
+
+
+CREATE PROCEDURE ActualizarUsuario
+    @idusuarios INT,
+    @rol_idrol INT,
+    @estados_idestados INT,
+    @correo_electronico VARCHAR(45),
+    @nombre_completo VARCHAR(100),
+    @password VARCHAR(255), -- Este campo es para la contraseña encriptada
+    @telefono VARCHAR(45),
+    @fecha_nacimiento DATE,
+    @fecha_creacion DATETIME,
+    @Clientes_idClientes INT
+AS
+BEGIN
+    UPDATE usuarios
+    SET 
+        rol_idrol = @rol_idrol,
+        estados_idestados = @estados_idestados,
+        correo_electronico = @correo_electronico,
+        nombre_completo = @nombre_completo,
+        password = @password, -- Asegúrate de pasar la contraseña ya encriptada
+        telefono = @telefono,
+        fecha_nacimiento = @fecha_nacimiento,
+        fecha_creacion = @fecha_creacion,
+        Clientes_idClientes = @Clientes_idClientes
+    WHERE idusuarios = @idusuarios;
+END;
+
+
+CREATE PROCEDURE ActualizarOrden
+    @idOrden INT,  -- ID de la orden a actualizar
+    @usuarios_idusuarios INT,  -- ID del usuario asociado a la orden
+    @estados_idestados INT,  -- Estado de la orden
+    @fecha_creacion DATETIME,  -- Fecha de creación de la orden
+    @direccion VARCHAR(545),  -- Dirección de entrega
+    @telefono VARCHAR(45),  -- Teléfono de contacto
+    @correo_electronico VARCHAR(45),  -- Correo electrónico de contacto
+    @fecha_entrega DATE,  -- Fecha de entrega
+    @total_orden FLOAT  -- Total de la orden
+AS
+BEGIN
+    UPDATE orden
+    SET 
+        usuarios_idusuarios = @usuarios_idusuarios,
+        estados_idestados = @estados_idestados,
+        fecha_creacion = @fecha_creacion,
+        direccion = @direccion,
+        telefono = @telefono,
+        correo_electronico = @correo_electronico,
+        fecha_entrega = @fecha_entrega,
+        total_orden = @total_orden
+    WHERE idOrden = @idOrden;
+END;
+
+
+CREATE PROCEDURE ObtenerOrdenes
+AS
+BEGIN
+    SELECT * FROM orden;
+END;
+
+CREATE PROCEDURE ObtenerOrdenPorId
+    @idOrden INT
+AS
+BEGIN
+    SELECT * FROM orden WHERE idOrden = @idOrden;
+END;
+
+
+select * from Orden
+
+
+CREATE PROCEDURE InsertarCategoriaProducto
+    @idCategoriaProductos INT,
+    @usuarios_idusuarios INT,
+    @nombre VARCHAR(100),
+    @estados_idestados INT,
+    @fecha_creacion DATETIME
+AS
+BEGIN
+    INSERT INTO CategoriaProductos (
+        idCategoriaProductos, 
+        usuarios_idusuarios, 
+        nombre, 
+        estados_idestados, 
+        fecha_creacion
+    )
+    VALUES (
+        @idCategoriaProductos, 
+        @usuarios_idusuarios, 
+        @nombre, 
+        @estados_idestados, 
+        @fecha_creacion
+    );
+END;
+
+
+CREATE PROCEDURE ObtenerCategoriasProductos
+AS
+BEGIN
+    SELECT * 
+    FROM CategoriaProductos;
+END;
+
+
+CREATE PROCEDURE ObtenerCategoriaProductoPorId
+    @idCategoriaProductos INT
+AS
+BEGIN
+    SELECT *
+    FROM CategoriaProductos
+    WHERE idCategoriaProductos = @idCategoriaProductos;
+END;
+
+
+CREATE PROCEDURE ActualizarCategoriaProducto
+    @idCategoriaProductos INT,
+    @usuarios_idusuarios INT,
+    @nombre VARCHAR(100),
+    @estados_idestados INT,
+    @fecha_creacion DATETIME
+AS
+BEGIN
+    UPDATE CategoriaProductos
+    SET 
+        usuarios_idusuarios = @usuarios_idusuarios,
+        nombre = @nombre,
+        estados_idestados = @estados_idestados,
+        fecha_creacion = @fecha_creacion
+    WHERE 
+        idCategoriaProductos = @idCategoriaProductos;
+END;
+
+
+CREATE PROCEDURE ObtenerEstados
+AS
+BEGIN
+    SELECT idestados, nombre
+    FROM estados;
+END;
+
+CREATE PROCEDURE ObtenerEstadoPorId
+    @idestados INT
+AS
+BEGIN
+    SELECT idestados, nombre
+    FROM estados
+    WHERE idestados = @idestados;
+END;
+
+
+CREATE PROCEDURE ActualizarEstado
+    @idestados INT,
+    @nombre VARCHAR(45)
+AS
+BEGIN
+    UPDATE estados
+    SET nombre = @nombre
+    WHERE idestados = @idestados;
+END;
+
+
+CREATE PROCEDURE ObtenerOrdenDetalles
+AS
+BEGIN
+    SELECT idOrdenDetalles, Orden_idOrden, Productos_idProductos, cantidad, precio, subtotal
+    FROM OrdenDetalles;
+END;
+
+
+CREATE PROCEDURE ObtenerOrdenDetallePorId
+    @idOrdenDetalles INT
+AS
+BEGIN
+    SELECT idOrdenDetalles, Orden_idOrden, Productos_idProductos, cantidad, precio, subtotal
+    FROM OrdenDetalles
+    WHERE idOrdenDetalles = @idOrdenDetalles;
+END;
+
+
+CREATE PROCEDURE ActualizarOrdenDetalle
+    @idOrdenDetalles INT,
+    @Orden_idOrden INT,
+    @Productos_idProductos INT,
+    @cantidad INT,
+    @precio FLOAT,
+    @subtotal FLOAT
+AS
+BEGIN
+    UPDATE OrdenDetalles
+    SET 
+        Orden_idOrden = @Orden_idOrden,
+        Productos_idProductos = @Productos_idProductos,
+        cantidad = @cantidad,
+        precio = @precio,
+        subtotal = @subtotal
+    WHERE idOrdenDetalles = @idOrdenDetalles;
+END;
+
+
+
+
 	--vistas finales para las tablas 
 
 CREATE VIEW TotalProductosActivosConStock AS
@@ -528,3 +777,6 @@ OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
 
 
 SELECT * FROM Top10ProductosMasVendidos;
+
+
+

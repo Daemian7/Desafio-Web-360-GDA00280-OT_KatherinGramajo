@@ -13,7 +13,7 @@ exports.getProductos = (req, res) => {
     });
 };
 
-// Insertar un producto usando procedimiento almacenado y archivo
+// Insertar un producto
 exports.createProducto = (req, res) => {
     upload.single("foto")(req, res, () => {
         const {

@@ -9,7 +9,7 @@ exports.getClientes = (req, res) => {
     });
 };
 
-// Insertar un cliente usando procedimiento almacenado
+// Insertar un cliente
 exports.createCliente = (req, res) => {
     const {
         idClientes,
@@ -38,7 +38,7 @@ exports.createCliente = (req, res) => {
     );
 };
 
-// Actualizar un cliente usando procedimiento almacenado
+// Actualizar un cliente
 exports.updateCliente = (req, res) => {
     const { id } = req.params; // ID del cliente a actualizar
     const { razon_social, nombre_comercial, direccion_entrega, telefono, email } = req.body;

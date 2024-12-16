@@ -11,7 +11,7 @@ exports.getUsuarios = (req, res) => {
     });
 };
 
-// Insertar un usuario usando el procedimiento almacenado
+// Insertar un usuario
 exports.createUsuario = async (req, res) => {
     const {
         idusuarios,
